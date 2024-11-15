@@ -7,10 +7,11 @@ This project is in the early stages of development. Many features are planned bu
 
 ## Planned Features
 
-- **Map creation tool**: You both can create your own map or auto generate a map for any adventure.
-- **Guild**: You will be able to create your own guild that allows for a DM and players to have differnt access levels.
-- **Save Data**: Allows for data to be saved between sessions that contains hit points, items, and gold.
-- **Custom Scripting**: Write custom cheat scripts in Rust for powerful game or software manipulation.
+- **Initiative Tracking**: Sort the turn order of various monsters and players based on their initiative.
+- **Autofill Monster Data**: Automatically fetch monster stats like hit points, armor class, initiative roll, and name from a backend database for quick setup.
+- **Dice Roller for Initiative**: Roll for initiative directly within the app and apply modifiers automatically.
+- **General Dice Roller**: A versatile dice roller for non-initiative rolls to handle any in-game checks or actions.
+- **Website Frontend**: A web-based interface for users to interact with the tracker easily from any device.
 
 ## Getting Started
 
