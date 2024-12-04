@@ -17,6 +17,15 @@ impl Monster {
         notes: notes.to_string(),
       }
     }
+    pub fn copy(&self) -> Monster {
+        Monster {
+            name: self.name.clone(),
+            initiative: self.initiative,
+            hit_points: self.hit_points,
+            armor_class: self.armor_class,
+            notes: self.notes.clone(),
+        }
+    }
     pub fn display_name(&self) {
         println!("{}", self.name);
     }

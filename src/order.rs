@@ -1,7 +1,7 @@
 use crate::monsters::Monster;
 
 pub(crate) struct Order {
-    list : Vec<Monster>
+    list : Vec<Monster>,
 }
 
 impl Order {
@@ -18,10 +18,10 @@ impl Order {
         self.list.remove(index.into());
     }
     //compete this sorting try and use quick sort
-    pub fn sort(&mut self) {
+    // pub fn sort(&mut self) {
 
+    // }
+    pub fn getMonster(&mut self, index: usize) -> Monster {
+        return self.list[index].copy()
     }
-    //create a getter for a value
-
-    //think of some way to get the index of the list like I'm not really sure how yo yet....
 }
