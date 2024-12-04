@@ -3,6 +3,7 @@
 
 mod monsters;
 mod order;
+mod mapped;
 
 use std::error::Error;
 
