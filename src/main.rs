@@ -4,6 +4,7 @@
 mod monsters;
 mod order;
 mod mapped;
+pub mod Mapped;
 
 use std::error::Error;
 
