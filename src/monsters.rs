@@ -16,7 +16,7 @@ impl Monster {
         armor_class,
         notes: notes.to_string(),
       }
-    }
+    }   
     pub fn copy(&self) -> Monster {
         Monster {
             name: self.name.clone(),
