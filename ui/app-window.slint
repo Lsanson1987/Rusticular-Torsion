@@ -1,4 +1,4 @@
-import { LineEdit, Button, Slider, HorizontalBox, VerticalBox, ProgressIndicator } from "std-widgets.slint";
+import { LineEdit, Button, Slider, HorizontalBox, VerticalBox, ProgressIndicator, StandardTableView } from "std-widgets.slint";
 
 
 export component AppWindow inherits Window {
@@ -15,6 +15,32 @@ export component AppWindow inherits Window {
                 root.request-increase-value();
             }
         }
+    }
+}
+
+export component Example inherits Window {
+    width: 500px;
+    height: 200px;
+    StandardTableView {
+        width: 500px;
+        height: 200px;
+        columns: [
+            { title: "Initiative" },
+            { title: "Name" },
+            { title: "AC" },
+            { title: "HP" },
+        ];
+        rows: [
+            [
+                { text: "14" }, { text: "Aarakocra" }, { text: "12" }, { text: "13" },
+            ],
+            [
+                { text: "16" }, { text: "Skeleton Guard" }, { text: "16" }, { text: "4" },
+            ],
+            [
+                { text: "20" }, { text: "Troll King" }, { text: "28" }, { text: "220" },
+            ]
+        ];
     }
 }
 
@@ -83,3 +109,4 @@ export component MainWindow inherits Window {
         }
     }
 }
+
