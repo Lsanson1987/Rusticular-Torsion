@@ -3,11 +3,14 @@
 #![deny(unsafe_code)]
 #[cfg(target_arch = "wasm32")]
 
+
 // mod monsters;
 // mod order;
 // mod mapped;
 
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::*; 
+use rand::prelude::*;
+
 
 slint::include_modules!();
 
@@ -32,9 +35,10 @@ pub fn main() {
 
         for c in 1..5 { // columns
             if c == 1 {
-                items.push(slint::format!("{r}").into());
+                let initiative = rand::random::<u8>() % 100;
+                items.push(slint::format!("{initiative}").into());
             } else if c == 2 {
-                items.push(slint::format!("Monster").into());
+                items.push(slint::format!("Monster {r}").into());
             } else if c == 3 {
                 let ac = 10 + r * 2;
                 items.push(slint::format!("{ac}").into());
