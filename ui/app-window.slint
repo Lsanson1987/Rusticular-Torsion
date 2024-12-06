@@ -1,46 +1,60 @@
-import { LineEdit, Button, Slider, HorizontalBox, VerticalBox, ProgressIndicator, StandardTableView } from "std-widgets.slint";
+import { LineEdit, Button, Slider, HorizontalBox, VerticalBox, ProgressIndicator, StandardTableView, GroupBox } from "std-widgets.slint";
 
-
-export component AppWindow inherits Window {
-    in-out property <int> counter: 10;
-    callback request-increase-value();
-    VerticalBox {
-        Text {
-            text: "Counter: \{root.counter}";
-        }
-
-        Button {
-            text: "Increase value";
-            clicked => {
-                root.request-increase-value();
-            }
-        }
-    }
+export global TableViewPageAdapter  {
+    in property <[[StandardListViewItem]]> row_data: [
+    ];
+    
+    pure callback filter_sort_model([[StandardListViewItem]], string, int, bool) -> [[StandardListViewItem]];
 }
 
-export component Example inherits Window {
-    width: 500px;
-    height: 200px;
-    StandardTableView {
-        width: 500px;
-        height: 200px;
-        columns: [
-            { title: "Initiative" },
-            { title: "Name" },
-            { title: "AC" },
-            { title: "HP" },
-        ];
-        rows: [
-            [
-                { text: "14" }, { text: "Aarakocra" }, { text: "12" }, { text: "13" },
-            ],
-            [
-                { text: "16" }, { text: "Skeleton Guard" }, { text: "16" }, { text: "4" },
-            ],
-            [
-                { text: "20" }, { text: "Troll King" }, { text: "28" }, { text: "220" },
-            ]
-        ];
+export component TableViewPage inherits Window {
+    property <int> sort-index: -1;
+    property <bool> sort-acending;
+    
+    title: @tr("TableView");
+    
+    HorizontalBox {
+        vertical-stretch: 1;
+
+        GroupBox {
+            title: @tr("StandardTableView");
+            vertical-stretch: 0;
+
+            VerticalLayout {
+                
+                StandardTableView {
+                    sort-ascending(index) => {
+                        root.sort-index = index;
+                        root.sort-acending = true;
+                    }
+
+                    sort-descending(index) => {
+                        root.sort-index = index;
+                        root.sort-acending = false;
+                    }
+
+                    columns: [
+                        { 
+                            title: @tr("Initiative")     
+                        },
+                        { title: @tr("Name") },
+                        { title: @tr("AC") },
+                        { title: @tr("HP") },
+                    ];
+                    rows: TableViewPageAdapter.filter_sort_model(TableViewPageAdapter.row_data, filter-edit.text, root.sort-index, root.sort-acending);
+                }
+
+                VerticalLayout {
+                    Text {
+                        text: @tr("Filter by Header 1:");
+                    }
+
+                    filter-edit := LineEdit {
+                        placeholder-text: @tr("Enter filter text");
+                    }
+                }   
+            }
+       }
     }
 }
 
