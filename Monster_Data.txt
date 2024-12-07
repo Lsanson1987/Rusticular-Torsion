@@ -1930,7 +1930,7 @@
   { id: 2046, ruleset: 'pathfinder 2e', name: "Red Fox", AC: 17, HP: 5, DEX: 7, HPD: [1, 7, 0] },
   { id: 2047, ruleset: 'pathfinder 2e', name: "Red Guard Ant", AC: 37, HP: 275, DEX: 27, HPD: [1, 27, 0] },
   { id: 2048, ruleset: 'pathfinder 2e', name: "Red Queen", AC: 42, HP: 335, DEX: 30, HPD: [1, 30, 0] },
-  { id: 2049, ruleset: 'pathfinder 2e', name: "Redacted, The Weaver In Dreams", AC: 39, HP: 310, DEX: 33, HPD: [1, 33, 0] },
+  { id: 2049, ruleset: 'pathfinder 2e', name: "Redacted The Weaver In Dreams", AC: 39, HP: 310, DEX: 33, HPD: [1, 33, 0] },
   { id: 2050, ruleset: 'pathfinder 2e', name: "Redcap", AC: 21, HP: 60, DEX: 12, HPD: [1, 12, 0] },
   { id: 2051, ruleset: 'pathfinder 2e', name: "Reef Octopus", AC: 17, HP: 20, DEX: 7, HPD: [1, 7, 0] },
   { id: 2052, ruleset: 'pathfinder 2e', name: "Reefclaw", AC: 20, HP: 17, DEX: 8, HPD: [1, 8, 0] },
