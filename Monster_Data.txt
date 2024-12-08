@@ -1,3 +1,5 @@
+
+var monsters = [
   { id: 117, ruleset: 'dnd 5e', name: "Aarakocra", AC: 12, HP: 13, DEX: 14, HPD:[3, 8, 0] },
   { id: 118, ruleset: 'dnd 5e', name: "Aboleth", AC: 17, HP: 135, DEX: 9, HPD:[18, 10, 36] },
   { id: 119, ruleset: 'dnd 5e', name: "Abominable Yeti", AC: 15, HP: 137, DEX: 10, HPD:[11, 12, 66] },
@@ -1930,7 +1932,7 @@
   { id: 2046, ruleset: 'pathfinder 2e', name: "Red Fox", AC: 17, HP: 5, DEX: 7, HPD: [1, 7, 0] },
   { id: 2047, ruleset: 'pathfinder 2e', name: "Red Guard Ant", AC: 37, HP: 275, DEX: 27, HPD: [1, 27, 0] },
   { id: 2048, ruleset: 'pathfinder 2e', name: "Red Queen", AC: 42, HP: 335, DEX: 30, HPD: [1, 30, 0] },
-  { id: 2049, ruleset: 'pathfinder 2e', name: "Redacted The Weaver In Dreams", AC: 39, HP: 310, DEX: 33, HPD: [1, 33, 0] },
+  { id: 2049, ruleset: 'pathfinder 2e', name: "Redacted, The Weaver In Dreams", AC: 39, HP: 310, DEX: 33, HPD: [1, 33, 0] },
   { id: 2050, ruleset: 'pathfinder 2e', name: "Redcap", AC: 21, HP: 60, DEX: 12, HPD: [1, 12, 0] },
   { id: 2051, ruleset: 'pathfinder 2e', name: "Reef Octopus", AC: 17, HP: 20, DEX: 7, HPD: [1, 7, 0] },
   { id: 2052, ruleset: 'pathfinder 2e', name: "Reefclaw", AC: 20, HP: 17, DEX: 8, HPD: [1, 8, 0] },
@@ -2541,3 +2543,4 @@
   { id: 2657, ruleset: 'pathfinder 2e', name: "Zuipnyrn", AC: 20, HP: 35, DEX: 9, HPD: [1, 9, 0] },
   { id: 2658, ruleset: 'pathfinder 2e', name: "Zuishin", AC: 30, HP: 200, DEX: 21, HPD: [1, 21, 0] },
   { id: 2659, ruleset: 'pathfinder 2e', name: "Zyss Serpentfolk", AC: 18, HP: 25, DEX: 8, HPD: [1, 8, 0] },
+];

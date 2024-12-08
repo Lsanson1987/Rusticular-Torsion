@@ -4,23 +4,37 @@
 #[cfg(target_arch = "wasm32")]
 
 
-// mod monsters;
 // mod order;
 // mod mapped;
-
+//mod monsters;
+//use monsters::Monster;
 use wasm_bindgen::prelude::*; 
 use rand::prelude::*;
-use std::io;
+use std::io::{self, BufReader};
 
 
 slint::include_modules!();
 
 use std::rc::Rc;
+use csv::Reader;
+// use std::error::Error;
+// use std::fs::File;
+// use std::path::Path;
+
 
 use slint::{Model, ModelExt, ModelRc, SharedString, StandardListViewItem, VecModel};
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub fn main() {
+    //file data base read 
+    //let mut monster_list:Vec<monsters::Monster>  = Vec::new();
+    // let file_path = "monsters.csv";
+    // let mut reader = Reader::from_path(file_path)?;
+
+    // for result in reader.records() {
+    //     let record = result?;
+    //     println!("{:?}", record);
+    // }
     // This provides better error messages in debug mode.
     // It's disabled in release mode so it doesn't bloat up the file size.
     #[cfg(all(debug_assertions, target_arch = "wasm32"))]

@@ -1,6 +1,5 @@
 
-
-pub(crate) struct Monster {
+pub struct Monster {
     name: String,
     initiative: u8,
     hit_points: u8,

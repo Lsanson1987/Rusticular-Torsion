@@ -6,7 +6,7 @@ pub(crate) struct Naive {
    id : u8,
 }
 
-impl  Naive {
+pub impl  Naive {
     pub fn new(naive: HashMap<u8, Monster>, id: u8) -> Naive {
         Naive {
             naive: HashMap::new(),
