@@ -71,14 +71,19 @@ export component TableViewPage inherits Window {
         VerticalBox {
             HorizontalBox {
                 padding: 0;
-                Text { text: "Elapsed Time:"; }
+                Text { 
+                    text: "Elapsed Time:"; 
+                }
                 ProgressIndicator {
                     preferred-width: 100px;
                     progress: elapsed-time / total-time;
                 }
             }
             Text{
-                text: (root.total-time / 1s) + "s";
+                text: "Elapsed time: " + (root.elapsed-time / 1s) + "s";
+            }
+            Text{
+                text: "total time: " + (root.total-time / 1s) + "s";
             }
             HorizontalBox {
                 padding: 0;
@@ -88,7 +93,8 @@ export component TableViewPage inherits Window {
                 }
                 slider := Slider {
                     maximum: 9.22882; // Log 2 scale
-                    value: 5.90689; // log2(60s)  
+                    value: 60; // default time
+                      
                     changed(new-log-value) => {
                         root.total-time = pow(2, new-log-value) * 1s;
                         root.elapsed-time = min(root.elapsed-time, root.total-time);
@@ -115,72 +121,6 @@ export component TableViewPage inherits Window {
                         root.timer-running = false;
                         root.elapsed-time = 0;
                     }
-                }
-            }
-        }
-    }
-}
-
-export component MainWindow inherits Window {
-    in-out property <duration> total-time: slider.value * 1s;
-    in-out property <duration> elapsed-time;
-    private property <bool> timer-running: false;
-
-    Timer {
-        interval: 10ms;
-        running: root.timer-running;
-        triggered => {
-            root.elapsed-time += self.interval;
-            root.elapsed-time = min(root.elapsed-time, root.total-time);
-        }
-    }
-
-    VerticalBox {
-        HorizontalBox {
-            padding: 0;
-            Text { text: "Elapsed Time:"; }
-            ProgressIndicator {
-                preferred-width: 100px;
-                progress: elapsed-time / total-time;
-            }
-        }
-        Text{
-            text: (root.total-time / 1s) + "s";
-        }
-        HorizontalBox {
-            padding: 0;
-            Text {
-                text: "Duration:";
-                vertical-alignment: center;
-            }
-            slider := Slider {
-                maximum: 9.22882; // Log 2 scale
-                value: 5.90689; // log2(60s)  
-                changed(new-log-value) => {
-                    root.total-time = pow(2, new-log-value) * 1s;
-                    root.elapsed-time = min(root.elapsed-time, root.total-time);
-                }
-            }
-        }
-        HorizontalBox {
-            spacing: 10px;
-            Button {
-                text: "Start";
-                clicked => {
-                    root.timer-running = true;
-                }
-            }
-            Button {
-                text: "Stop";
-                clicked => {
-                    root.timer-running = false;
-                }
-            }
-            Button {
-                text: "Reset";
-                clicked => {
-                    root.timer-running = false;
-                    root.elapsed-time = 0;
                 }
             }
         }
