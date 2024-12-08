@@ -13,7 +13,11 @@ export component TableViewPage inherits Window {
     private property <bool> timer-running: false;
     property <int> sort-index: -1;
     property <bool> sort-acending;
-
+    callback request-new-row();
+    callback initiative-changed(string);
+    callback name-changed(string);
+    callback ac-changed(string);
+    callback hp-changed(string);
     
     title: @tr("TableView");
     
@@ -39,7 +43,7 @@ export component TableViewPage inherits Window {
 
                     columns: [
                         { 
-                            title: @tr("Initiative")     
+                        title: @tr("Initiative")     
                         },
                         { title: @tr("Name") },
                         { title: @tr("AC") },
@@ -57,18 +61,54 @@ export component TableViewPage inherits Window {
                         placeholder-text: @tr("Enter filter text");
                     }
                 }   
+                HorizontalBox {
+                    LineEdit {
+                        font-size: 14px;
+                        placeholder-text: "Enter initiative";
+                        edited => {
+                            root.initiative-changed(self.text);
+                        }
+                    }
+                    LineEdit {
+                        font-size: 14px;
+                        placeholder-text: "Enter Name";
+                        edited => {
+                            root.name-changed(self.text);
+                        }
+                    }
+                    LineEdit {
+                        font-size: 14px;
+                        placeholder-text: "Enter AC";
+                        edited => {
+                            root.ac-changed(self.text);
+                        }
+                    }
+                    LineEdit {
+                        font-size: 14px;
+                        placeholder-text: "Enter HP";
+                        edited => {
+                            root.hp-changed(self.text);
+                        }
+                    }
+                    Button {
+                        text: @tr("Add Row");
+                        clicked => {
+                            root.request-new-row();
+                        }
+                    }
+                }
             }
        }
-        Timer {
-            interval: 10ms;
-            running: root.timer-running;
-            triggered => {
-                root.elapsed-time += self.interval;
-                root.elapsed-time = min(root.elapsed-time, root.total-time);
-            }
-        }
-
+        
         VerticalBox {
+            Timer {
+                interval: 10ms;
+                running: root.timer-running;
+                triggered => {
+                    root.elapsed-time += self.interval;
+                    root.elapsed-time = min(root.elapsed-time, root.total-time);
+                }
+            }
             HorizontalBox {
                 padding: 0;
                 Text { 
