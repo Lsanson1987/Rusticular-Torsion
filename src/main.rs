@@ -10,6 +10,7 @@
 
 use wasm_bindgen::prelude::*; 
 use rand::prelude::*;
+use std::io;
 
 
 slint::include_modules!();
@@ -30,24 +31,32 @@ pub fn main() {
     let row_data: Rc<VecModel<slint::ModelRc<StandardListViewItem>>> = Rc::new(VecModel::default());
 
     // generate rows and columns
-    for r in 1..5 { // rows
+    for r in 1..2 { // rows
         let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
 
         for c in 1..5 { // columns
             if c == 1 {
-                let initiative = rand::random::<u8>() % 100;
-                items.push(slint::format!("{initiative}").into());
+                //let initiative = rand::random::<u8>() % 100;
+                let input_num = input_request(0);
+                items.push(slint::format!("{input_num}").into());
             } else if c == 2 {
-                items.push(slint::format!("Monster {r}").into());
+                println!("Please enter your Name:");
+                let mut name = String::new();
+                io::stdin()
+                    .read_line(&mut name)
+                    .expect("Failed to read line");
+                println!("You enterd an name {}", name.trim());
+                items.push(slint::format!("{name}").into());
             } else if c == 3 {
-                let ac = 10 + r * 2;
-                items.push(slint::format!("{ac}").into());
+                //let ac = 10 + r * 2;
+                let input_num = input_request(1);
+                items.push(slint::format!("{input_num}").into());
             } else if c == 4 {
-                let hp = 100 + r * 10;
-                items.push(slint::format!("{hp}").into());
+                //let hp = 100 + r * 10;
+                let input_num = input_request(2);
+                items.push(slint::format!("{input_num}").into());
             }
         }
-
         row_data.push(items.into());
     }
 
@@ -57,7 +66,19 @@ pub fn main() {
 
     app.run().unwrap();
 }
-
+fn input_request (version: u8 ) -> i32 {
+    match version {
+        0 => println!("Please enter an Initiative:"),
+        1 => println!("Please enter an AC:"),
+        2 => println!("Please enter an HP:"),
+        _ => println!("As long the Earth, Sun, and Moon exist, everything will be alright."),
+    }
+    let mut input_str = String::new();
+    io::stdin().read_line(&mut input_str).expect("Failed to read line");
+    let input_num: i32 = input_str.trim().parse().expect("Please enter a valid integer");
+    println!("You entered: {}", input_num);
+    return input_num;
+}
 fn filter_sort_model(
     source_model: ModelRc<ModelRc<StandardListViewItem>>,
     filter: SharedString,
