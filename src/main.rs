@@ -1,6 +1,7 @@
 // Prevent console window in addition to Slint window in Windows release builds when, e.g., starting the app via file manager. Ignored on other platforms.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![deny(unsafe_code)]
+use std::alloc::System;
 #[cfg(target_arch = "wasm32")]
 
 
@@ -29,10 +30,8 @@ use slint::{Model, ModelExt, ModelRc, SharedString, StandardListViewItem, VecMod
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub fn main() {
     //file data base read 
-    let monster_list: HashMap<String, Monster>  = monster_data_base();
-    for (name, monster) in monster_list {
-        println!("this is the name {}", name);
-    }
+    // let temp_map: HashMap<String, Monster>  = monster_data_base();
+    // let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
     // This provides better error messages in debug mode.
     // It's disabled in release mode so it doesn't bloat up the file size.
     #[cfg(all(debug_assertions, target_arch = "wasm32"))]
@@ -45,7 +44,8 @@ pub fn main() {
     // generate rows and columns
     for r in 1..2 { // rows
         let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
-
+        let temp_map: HashMap<String, Monster>  = monster_data_base();
+        //let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
         for c in 1..5 { // columns
             if c == 2 {
                 //let initiative = rand::random::<u8>() % 100;
@@ -58,10 +58,16 @@ pub fn main() {
                     .read_line(&mut name)
                     .expect("Failed to read line");
                 println!("You enterd an name {}", name.trim());
+                println!("You enterd an name {}", &name);
                 items.push(slint::format!("{name}").into());
-                // for (name, monster) in monster_list {
-                //     println!("this is the name {}", name);
-                // }
+                if temp_map.contains_key(&name) {
+                        println!("AAAAAAAAAAAAAa");
+                        //fix this issue by havving pro[er extraction]
+                        items.push(slint::format!("{:?}", temp_map.get_v(&name).display_initiative()).into());
+                        items.push(slint::format!("{:?}", temp_map.get_key_value(&name).display_armor_class()).into());
+                        items.push(slint::format!("{:?}", temp_map.get_key_value(&name).display_hit_points()).into());
+                        break;
+                }
             } else if c == 3 {
                 //let ac = 10 + r * 2;
                 let input_num = input_request(1);
@@ -173,6 +179,8 @@ fn monster_data_base() -> HashMap<String, Monster> {
 fn check_if_name(monster_list: &HashMap<String, Monster>, name: String) -> bool {
     return monster_list.contains_key(&name);
 }
+
+
 pub struct Monster {
     name: String,
     initiative: u64,
