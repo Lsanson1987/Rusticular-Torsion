@@ -9,10 +9,10 @@ use std::alloc::System;
 // mod mapped;
 //mod monsters;
 //use monsters::Monster;
+use rand::Rng;
 use std::{collections::HashMap, hash::Hash, iter};
 //use wasm_bindgen::prelude::*; 
 use rand::prelude::*;
-use std::collections::{hash_map, HashMap};
 use std::io::{self, BufReader};
 
 
@@ -46,27 +46,34 @@ pub fn main() {
         let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
         let temp_map: HashMap<String, Monster>  = monster_data_base();
         //let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
+        let mut name = String::new();
         for c in 1..5 { // columns
             if c == 2 {
                 //let initiative = rand::random::<u8>() % 100;
                 let input_num = input_request(0);
                 items.push(slint::format!("{input_num}").into());
+                items.push(slint::format!("{name}").into());
             } else if c == 1 {
                 println!("Please enter your Name:");
-                let mut name = String::new();
                 io::stdin()
                     .read_line(&mut name)
                     .expect("Failed to read line");
-                println!("You enterd an name {}", name.trim());
-                println!("You enterd an name {}", &name);
-                items.push(slint::format!("{name}").into());
-                if temp_map.contains_key(&name) {
-                        println!("AAAAAAAAAAAAAa");
-                        //fix this issue by havving pro[er extraction]
-                        items.push(slint::format!("{:?}", temp_map.get_v(&name).display_initiative()).into());
-                        items.push(slint::format!("{:?}", temp_map.get_key_value(&name).display_armor_class()).into());
-                        items.push(slint::format!("{:?}", temp_map.get_key_value(&name).display_hit_points()).into());
+                let mut is_real = false;
+                for (key, value) in &temp_map {
+                    println!("{}", key);
+                    if *key.trim().to_lowercase() == name.trim().to_lowercase() {
+                        let initive_rand = roll_dice(1, 20, ((value.get_init() - 10) / 2).try_into().unwrap());
+                        items.push(slint::format!("{:?}", initive_rand).into());
+                        items.push(slint::format!("{name}").into());
+                        items.push(slint::format!("{:?}", value.display_armor_class()).into());
+                        items.push(slint::format!("{:?}", value.display_hit_points()).into());
+                        is_real = true;
                         break;
+                    }
+                }
+                println!("{}", is_real);
+                if is_real {
+                    break;
                 }
             } else if c == 3 {
                 //let ac = 10 + r * 2;
@@ -213,11 +220,14 @@ impl Monster {
     pub fn display_initiative(&self) {
         println!("{}", self.initiative);
     }
-    pub fn display_hit_points(&self) {
-        println!("{}", self.hit_points);
+    pub fn get_init(&self) -> u64 {
+        self.initiative
     }
-    pub fn display_armor_class(&self) {
-        println!("{}", self.armor_class);
+    pub fn display_hit_points(&self) -> u64 {
+        self.hit_points
+    }
+    pub fn display_armor_class(&self) -> u64 {
+        self.armor_class
     }
     pub fn display_notes(&self) {
         println!("{}", self.notes);
@@ -240,4 +250,14 @@ impl Monster {
     pub fn heal(&mut self, x: u64) {
         self.hit_points = self.hit_points + x;
     }
+}
+
+pub fn roll_dice(num_dice: u32, sides: u32, modifier: u32) -> u32 {
+    let mut rng = rand::thread_rng();
+    let mut total = 0;
+    for _ in 0..num_dice {
+        let roll = rng.gen_range(1..=sides);
+        total += roll;
+    }
+    total + modifier
 }
