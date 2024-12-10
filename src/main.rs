@@ -40,9 +40,9 @@ pub fn main() {
     let app = TableViewPage::new().unwrap();
 
     let row_data: Rc<VecModel<slint::ModelRc<StandardListViewItem>>> = Rc::new(VecModel::default());
-
+    let charater_number = input_request(3) + 1;
     // generate rows and columns
-    for r in 1..2 { // rows
+    for r in 1..charater_number { // rows
         let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
         let temp_map: HashMap<String, Monster>  = monster_data_base();
         //let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
@@ -99,6 +99,7 @@ fn input_request (version: u8 ) -> i32 {
         0 => println!("Please enter an Initiative:"),
         1 => println!("Please enter an AC:"),
         2 => println!("Please enter an HP:"),
+        3 => println!("Please enter number of charaters:"),
         _ => println!("As long the Earth, Sun, and Moon exist, everything will be alright."),
     }
     let mut input_str = String::new();
