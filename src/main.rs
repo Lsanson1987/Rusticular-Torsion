@@ -4,11 +4,6 @@
 use std::alloc::System;
 #[cfg(target_arch = "wasm32")]
 
-
-// mod order;
-// mod mapped;
-//mod monsters;
-//use monsters::Monster;
 use rand::Rng;
 use std::{collections::HashMap, hash::Hash, iter};
 //use wasm_bindgen::prelude::*; 
@@ -29,17 +24,13 @@ use slint::{Model, ModelExt, ModelRc, SharedString, StandardListViewItem, VecMod
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub fn main() {
-    //file data base read 
-    // let temp_map: HashMap<String, Monster>  = monster_data_base();
-    // let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
-    // This provides better error messages in debug mode.
-    // It's disabled in release mode so it doesn't bloat up the file size.
     #[cfg(all(debug_assertions, target_arch = "wasm32"))]
     console_error_panic_hook::set_once();
 
     let app = TableViewPage::new().unwrap();
 
     let row_data: Rc<VecModel<slint::ModelRc<StandardListViewItem>>> = Rc::new(VecModel::default());
+    //user to select number of characters
     let charater_number = input_request(3) + 1;
     // generate rows and columns
     for r in 1..charater_number { // rows
@@ -47,6 +38,7 @@ pub fn main() {
         let temp_map: HashMap<String, Monster>  = monster_data_base();
         //let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
         let mut name = String::new();
+        //filling out rows/coloums with inputs
         for c in 1..5 { // columns
             if c == 2 {
                 //let initiative = rand::random::<u8>() % 100;
@@ -59,6 +51,7 @@ pub fn main() {
                     .read_line(&mut name)
                     .expect("Failed to read line");
                 let mut is_real = false;
+                //if found within data base then auto fill with randome initive
                 for (key, value) in &temp_map {
                     println!("{}", key);
                     if *key.trim().to_lowercase() == name.trim().to_lowercase() {
@@ -76,11 +69,9 @@ pub fn main() {
                     break;
                 }
             } else if c == 3 {
-                //let ac = 10 + r * 2;
                 let input_num = input_request(1);
                 items.push(slint::format!("{input_num}").into());
             } else if c == 4 {
-                //let hp = 100 + r * 10;
                 let input_num = input_request(2);
                 items.push(slint::format!("{input_num}").into());
             }
@@ -94,6 +85,7 @@ pub fn main() {
 
     app.run().unwrap();
 }
+//how to handel inputs
 fn input_request (version: u8 ) -> i32 {
     match version {
         0 => println!("Please enter an Initiative:"),
@@ -143,7 +135,8 @@ fn filter_sort_model(
 
     model
 }
-
+//the data base that is holding all the monsters
+//created using previous python file
 fn monster_data_base() -> HashMap<String, Monster> {
     let mut monster_list: HashMap<String, Monster> = HashMap::new();
     let file_path = "monsters.csv";
@@ -184,11 +177,8 @@ fn monster_data_base() -> HashMap<String, Monster> {
     monster_list
 }
 
-fn check_if_name(monster_list: &HashMap<String, Monster>, name: String) -> bool {
-    return monster_list.contains_key(&name);
-}
 
-
+//moster struct used in the hasmap
 pub struct Monster {
     name: String,
     initiative: u64,
@@ -196,7 +186,7 @@ pub struct Monster {
     armor_class: u64,
     notes: String,
 }
-
+//getters and setter for the monster struct and other various functions
 impl Monster {
     pub fn new(name: &str, initiative: u64, hit_points: u64, armor_class: u64, notes: &str) -> Monster {
       Monster {  name: name.to_string(),
@@ -253,12 +243,18 @@ impl Monster {
     }
 }
 
+//allows for dice rolls
+//select the number of dice, number of sides on that dicce, and if there are any modifiers to add at end of rolling
 pub fn roll_dice(num_dice: u32, sides: u32, modifier: u32) -> u32 {
     let mut rng = rand::thread_rng();
     let mut total = 0;
     for _ in 0..num_dice {
         let roll = rng.gen_range(1..=sides);
+        print!("You got: {}", roll);
+        print!("You got with modfier: {}", roll + modifier);
         total += roll;
     }
+    print!("In total you got raw: {}", total);
+    print!("In total you got with modifier: {}", modifier + total);
     total + modifier
 }
