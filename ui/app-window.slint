@@ -31,11 +31,6 @@ export component TableViewPage inherits Window {
             VerticalLayout {
                 
                 StandardTableView {
-                    // create callback function to handle sorting
-                    sort-ascending(index) => {
-                        root.sort-index = index;
-                        root.sort-acending = true;
-                    }
                     // account for both ascending and descending sorting
                     sort-descending(index) => {
                         root.sort-index = index;
@@ -58,7 +53,7 @@ export component TableViewPage inherits Window {
                 VerticalLayout {
                     // create a filter for the table
                     Text {
-                        text: @tr("Filter by Header 1:");
+                        text: @tr("Filter by Header 2:");
                     }
                     filter-edit := LineEdit {
                         placeholder-text: @tr("Enter filter text");
@@ -91,6 +86,17 @@ export component TableViewPage inherits Window {
                         text: @tr("Add Row");
                         clicked => {
                             root.add-row();
+                            root.current-initiative = "";
+                            root.current-ac = "";
+                            root.current-hp = "";
+                            root.current-name = "";
+                        }
+                    }
+                    Button {
+                        text: @tr("Sort by Initiative");
+                        clicked => {
+                            root.sort-index = 0;
+                            root.sort-acending = false;
                         }
                     }
                 }

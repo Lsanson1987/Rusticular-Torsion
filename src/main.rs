@@ -27,7 +27,7 @@ pub fn main() {
     #[cfg(all(debug_assertions, target_arch = "wasm32"))]
     console_error_panic_hook::set_once();
 
-    let app = TableViewPage::new().unwrap();
+    let app = Rc::new(TableViewPage::new().unwrap());
 
     let row_data: Rc<VecModel<slint::ModelRc<StandardListViewItem>>> = Rc::new(VecModel::default());
     //user to select number of characters
@@ -83,35 +83,31 @@ pub fn main() {
 
     app.global::<TableViewPageAdapter>().set_row_data(row_data.clone().into());
 
-    app.on_add_row(move || {
-        let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
-        // get current hp from slint table
-        for c in 1..5 {
-            if c == 2 {
-                let input_num = input_request(0);
-                items.push(slint::format!("{input_num}").into());
-            } else if c == 1 {
-                let input_num = input_request(3);
-                items.push(slint::format!("{input_num}").into());
-            } else if c == 3 {
-                let input_num = input_request(1);
-                items.push(slint::format!("{input_num}").into());
-            } else if c == 4 {
-                let input_num = input_request(2);
-                items.push(slint::format!("{input_num}").into());
-            }
+    app.on_add_row({
+        let app_clone = app.clone(); // Clone the Rc handle
+        let row_data_clone = row_data.clone(); // Clone the row_data Rc handle
+
+        move || {
+            let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
+
+            // Retrieve the current values from the app
+            let current_hp = app_clone.get_current_hp();
+            let current_ac = app_clone.get_current_ac();
+            let current_init = app_clone.get_current_initiative();
+            let current_name = app_clone.get_current_name();
+
+            // Add the retrieved values to the new row
+            items.push(slint::format!("{current_init}").into());
+            items.push(slint::format!("{current_name}").into());
+            items.push(slint::format!("{current_hp}").into());
+            items.push(slint::format!("{current_ac}").into());
+
+            // Push the new row into the row data
+            row_data_clone.push(items.into());
         }
-        // let current_hp = app.get_current_hp();
-        // let current_ac = app.get_current_ac();
-        // let current_init = app.get_current_initiative();
-        // let current_name = app.get_current_name();
-        // items.push(slint::format!("{current_init}").into());
-        // items.push(slint::format!("{current_name}").into());
-        // items.push(slint::format!("{current_hp}").into());
-        // items.push(slint::format!("{current_ac}").into());
-        row_data.push(items.into());
     });
 
+    app.global::<TableViewPageAdapter>().set_row_data(row_data.clone().into());
     app.global::<TableViewPageAdapter>().on_filter_sort_model(filter_sort_model);
 
     app.run().unwrap();
