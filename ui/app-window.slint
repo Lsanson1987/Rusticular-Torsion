@@ -1,4 +1,4 @@
-import { LineEdit, Button, Slider, HorizontalBox, VerticalBox, ProgressIndicator, StandardTableView, GroupBox } from "std-widgets.slint";
+import { LineEdit, Button, Slider, HorizontalBox, VerticalBox, ProgressIndicator, StandardTableView, GroupBox, CheckBox, Switch } from "std-widgets.slint";
 // This code offers a datastructure and callback for the table view page
 // note: this code is taken from one of the examples in the documentation, https://docs.slint.dev/latest/demos/gallery/
 export global TableViewPageAdapter  {
@@ -7,16 +7,20 @@ export global TableViewPageAdapter  {
 }
 
 export component TableViewPage inherits Window {
+    // setting up all the properties that need to communicate between front and back end
     in-out property <duration> total-time: slider.value * 1s;
     in-out property <duration> elapsed-time;
-    private property <bool> timer-running: false;
-    property <int> sort-index: -1;
-    property <bool> sort-acending;
     in-out property <int> name; 
     in-out property <string> current-initiative: "";
     in-out property <string> current-name: "";
     in-out property <string> current-ac: "";
     in-out property <string> current-hp: "";
+    in-out property <bool> switched: false;
+    // properties for back end only
+    private property <bool> timer-running: false;
+    property <int> sort-index: -1;
+    property <bool> sort-acending;
+    // callbacks to use in the rust backend
     callback add-row();
     callback delete_row_by_name();
 
@@ -51,7 +55,7 @@ export component TableViewPage inherits Window {
                         { title: @tr("HP") },
                     ];
                     // create the rows for the table dynamically, based on the row_data property and the filter_sort_model callback
-                    // note: this code is taken from one of the examples in the documentation, https://docs.slint.dev/latest/demos/gallery/
+                    // note: this code snippet is taken from one of the examples in the documentation, https://docs.slint.dev/latest/demos/gallery/
                     rows: TableViewPageAdapter.filter_sort_model(TableViewPageAdapter.row_data, filter-edit.text, root.sort-index, root.sort-acending);
                 }
 
@@ -87,15 +91,25 @@ export component TableViewPage inherits Window {
                         placeholder-text: "Enter HP";
                         text <=> root.current-hp;
                     }
+                    // add a switch to toggle clearing inputs after adding a row for unique vs horde enemies
+                    Switch {
+                        text: "Clear Inputs After Adding?";
+                        toggled => {
+                            root.switched = !root.switched;
+                        }
+                    }
                     // add a button to add a new row to the table
                     Button {
                         text: @tr("Add Row");
                         clicked => {
                             root.add-row();
-                            root.current-initiative = "";
-                            root.current-ac = "";
-                            root.current-hp = "";
-                            root.current-name = "";
+                            // clear the inputs after adding a row, useful for unique enemies, but it makes it more tedious to spam horde enemies 
+                            if (root.switched) {
+                                root.current-initiative = "";
+                                root.current-ac = "";
+                                root.current-hp = "";
+                                root.current-name = "";
+                            }  
                         }
                     }
                     // sort initiative button uses callback to sort the table by initiative
@@ -174,7 +188,8 @@ export component TableViewPage inherits Window {
                 slider := Slider {
                     maximum: 9.22882; // Log 2 scale
                     value: 60; // default time
-                      
+                    // I made the slider scale using a logarithm to make it easier to select larger time values 
+                    // while still allowing fine control over smaller values
                     changed(new-log-value) => {
                         root.total-time = pow(2, new-log-value) * 1s;
                         root.elapsed-time = min(root.elapsed-time, root.total-time);

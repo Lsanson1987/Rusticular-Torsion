@@ -88,7 +88,8 @@ pub fn main() {
         let app_clone = app.clone(); 
         let row_data_clone = row_data.clone(); 
         let monster_data = monster_data_base();
-    
+
+        // converts variables captured by reference to variables captured by value.
         move || {
             let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
     
@@ -155,11 +156,14 @@ pub fn main() {
         }
     });
     
+    // callback to update the row data
     app.global::<TableViewPageAdapter>().set_row_data(row_data.clone().into());
+    // callback to update the row data after filtering and sorting
     app.global::<TableViewPageAdapter>().on_filter_sort_model(filter_sort_model);
-
+    // run the app and show the window
     app.run().unwrap();
 }
+
 //how to handel inputs
 fn input_request (version: u8 ) -> i32 {
     match version {
@@ -175,15 +179,19 @@ fn input_request (version: u8 ) -> i32 {
     println!("You entered: {}", input_num);
     return input_num;
 }
+// function callback to filter and sort the model
 fn filter_sort_model(
     source_model: ModelRc<ModelRc<StandardListViewItem>>,
     filter: SharedString,
     sort_index: i32,
     sort_ascending: bool,
 ) -> ModelRc<ModelRc<StandardListViewItem>> {
+    // have to do this because of Rust's ownership rules
     let mut model = source_model.clone();
 
+
     if !filter.is_empty() {
+        // note: this code is taken from one of the examples in the documentation, https://docs.slint.dev/latest/demos/gallery/
         let filter = filter.to_lowercase();
 
         // filter by first row
@@ -195,6 +203,7 @@ fn filter_sort_model(
     }
 
     if sort_index >= 0 {
+        // this code has been adjusted to account for the fact that the data in the column is numeric
         model = Rc::new(
             model.clone().sort_by(move |r_a, r_b| {
                 let c_a = r_a.row_data(sort_index as usize).unwrap();
