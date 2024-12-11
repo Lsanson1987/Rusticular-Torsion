@@ -31,53 +31,53 @@ pub fn main() {
 
     let row_data: Rc<VecModel<slint::ModelRc<StandardListViewItem>>> = Rc::new(VecModel::default());
     //user to select number of characters
-    let charater_number = input_request(3) + 1;
-    // generate rows and columns
-    for r in 1..charater_number { // rows
-        let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
-        let temp_map: HashMap<String, Monster>  = monster_data_base();
-        //let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
-        let mut name = String::new();
-        //filling out rows/coloums with inputs
-        for c in 1..5 { // columns
-            if c == 2 {
-                //let initiative = rand::random::<u8>() % 100;
-                let input_num = input_request(0);
-                items.push(slint::format!("{input_num}").into());
-                items.push(slint::format!("{name}").into());
-            } else if c == 1 {
-                println!("Please enter your Name:");
-                io::stdin()
-                    .read_line(&mut name)
-                    .expect("Failed to read line");
-                let mut is_real = false;
-                //if found within data base then auto fill with randome initive
-                for (key, value) in &temp_map {
-                    println!("{}", key);
-                    if *key.trim().to_lowercase() == name.trim().to_lowercase() {
-                        let initive_rand = roll_dice(1, 20, ((value.get_init() - 10) / 2).try_into().unwrap());
-                        items.push(slint::format!("{:?}", initive_rand).into());
-                        items.push(slint::format!("{name}").into());
-                        items.push(slint::format!("{:?}", value.display_armor_class()).into());
-                        items.push(slint::format!("{:?}", value.display_hit_points()).into());
-                        is_real = true;
-                        break;
-                    }
-                }
-                println!("{}", is_real);
-                if is_real {
-                    break;
-                }
-            } else if c == 3 {
-                let input_num = input_request(1);
-                items.push(slint::format!("{input_num}").into());
-            } else if c == 4 {
-                let input_num = input_request(2);
-                items.push(slint::format!("{input_num}").into());
-            }
-        }
-        row_data.push(items.into());
-    }
+    // let charater_number = input_request(3) + 1;
+    // // generate rows and columns
+    // for r in 1..charater_number { // rows
+    //     let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
+    //     let temp_map: HashMap<String, Monster>  = monster_data_base();
+    //     //let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
+    //     let mut name = String::new();
+    //     //filling out rows/coloums with inputs
+    //     for c in 1..5 { // columns
+    //         if c == 2 {
+    //             //let initiative = rand::random::<u8>() % 100;
+    //             let input_num = input_request(0);
+    //             items.push(slint::format!("{input_num}").into());
+    //             items.push(slint::format!("{name}").into());
+    //         } else if c == 1 {
+    //             println!("Please enter your Name:");
+    //             io::stdin()
+    //                 .read_line(&mut name)
+    //                 .expect("Failed to read line");
+    //             let mut is_real = false;
+    //             //if found within data base then auto fill with randome initive
+    //             for (key, value) in &temp_map {
+    //                 println!("{}", key);
+    //                 if *key.trim().to_lowercase() == name.trim().to_lowercase() {
+    //                     let initive_rand = roll_dice(1, 20, ((value.get_init() - 10) / 2).try_into().unwrap());
+    //                     items.push(slint::format!("{:?}", initive_rand).into());
+    //                     items.push(slint::format!("{name}").into());
+    //                     items.push(slint::format!("{:?}", value.display_armor_class()).into());
+    //                     items.push(slint::format!("{:?}", value.display_hit_points()).into());
+    //                     is_real = true;
+    //                     break;
+    //                 }
+    //             }
+    //             println!("{}", is_real);
+    //             if is_real {
+    //                 break;
+    //             }
+    //         } else if c == 3 {
+    //             let input_num = input_request(1);
+    //             items.push(slint::format!("{input_num}").into());
+    //         } else if c == 4 {
+    //             let input_num = input_request(2);
+    //             items.push(slint::format!("{input_num}").into());
+    //         }
+    //     }
+    //     row_data.push(items.into());
+    // }
 
 
 
@@ -100,7 +100,7 @@ pub fn main() {
             for (key, value) in &monster_data {
                 if *key.trim().to_lowercase() == current_name.trim().to_lowercase() {
                     found = true;
-                    let initive_rand = roll_dice(1, 20, ((value.get_init() - 10) / 2).try_into().unwrap());
+                    let initive_rand: i32 = roll_dice(1, 20, ((value.get_init() - 10) / 2).try_into().unwrap());
                     items.push(slint::format!("{:?}", initive_rand).into());
                     items.push(slint::format!("{current_name}").into());
                     items.push(slint::format!("{:?}", value.display_armor_class()).into());
@@ -210,9 +210,9 @@ fn monster_data_base() -> HashMap<String, Monster> {
                                               .map(|s| s.to_string())
                                               .collect();
 
-                let ac: u64 = values[1].parse().unwrap_or(0);
-                let hp: u64 = values[2].parse().unwrap_or(0);
-                let dwa: u64 = values[3].parse().unwrap_or(0);
+                let ac: i64 = values[1].parse().unwrap_or(0);
+                let hp: i64 = values[2].parse().unwrap_or(0);
+                let dwa: i64 = values[3].parse().unwrap_or(0);
                 let monster = Monster::new(&values[0], ac, hp, dwa, "");
                 monster_list.insert(values[0].clone(), monster);
             },
@@ -229,14 +229,14 @@ fn monster_data_base() -> HashMap<String, Monster> {
 //moster struct used in the hasmap
 pub struct Monster {
     name: String,
-    initiative: u64,
-    hit_points: u64,
-    armor_class: u64,
+    initiative: i64,
+    hit_points: i64,
+    armor_class: i64,
     notes: String,
 }
 //getters and setter for the monster struct and other various functions
 impl Monster {
-    pub fn new(name: &str, initiative: u64, hit_points: u64, armor_class: u64, notes: &str) -> Monster {
+    pub fn new(name: &str, initiative: i64, hit_points: i64, armor_class: i64, notes: &str) -> Monster {
       Monster {  name: name.to_string(),
         initiative,
         hit_points,
@@ -259,22 +259,22 @@ impl Monster {
     pub fn display_initiative(&self) {
         println!("{}", self.initiative);
     }
-    pub fn get_init(&self) -> u64 {
+    pub fn get_init(&self) -> i64 {
         self.initiative
     }
-    pub fn display_hit_points(&self) -> u64 {
+    pub fn display_hit_points(&self) -> i64 {
         self.hit_points
     }
-    pub fn display_armor_class(&self) -> u64 {
+    pub fn display_armor_class(&self) -> i64 {
         self.armor_class
     }
     pub fn display_notes(&self) {
         println!("{}", self.notes);
     }
-    pub fn change_initiative(&mut self, int: u64) {
+    pub fn change_initiative(&mut self, int: i64) {
         self.initiative = int;
     }
-    pub fn change_armor(&mut self, int: u64) {
+    pub fn change_armor(&mut self, int: i64) {
         self.armor_class = int;
     }
     pub fn change_name(&mut self, name: &str) {
@@ -283,17 +283,19 @@ impl Monster {
     pub fn change_note(&mut self, name: &str) {
         self.notes = name.to_string();
     }
-    pub fn damage(&mut self, x: u64) {
+    pub fn damage(&mut self, x: i64) {
         self.hit_points = self.hit_points - x;
     }
-    pub fn heal(&mut self, x: u64) {
+    pub fn heal(&mut self, x: i64) {
         self.hit_points = self.hit_points + x;
     }
 }
 
 //allows for dice rolls
 //select the number of dice, number of sides on that dicce, and if there are any modifiers to add at end of rolling
-pub fn roll_dice(num_dice: u32, sides: u32, modifier: u32) -> u32 {
+
+// needs to be int cuz modifiers can be negative
+pub fn roll_dice(num_dice: i32, sides: i32, modifier: i32) -> i32 {
     let mut rng = rand::thread_rng();
     let mut total = 0;
     for _ in 0..num_dice {
