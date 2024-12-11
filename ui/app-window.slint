@@ -18,6 +18,7 @@ export component TableViewPage inherits Window {
     in-out property <string> current-ac: "";
     in-out property <string> current-hp: "";
     callback add-row();
+    callback delete_row_by_name();
 
     // Start of the UI definition for our table
     title: @tr("TableView");
@@ -25,13 +26,17 @@ export component TableViewPage inherits Window {
         vertical-stretch: 1;
         // Create a box to store table, filter, and buttons
         GroupBox {
-            title: @tr("StandardTableView");
+            title: @tr("Initative Tracker");
             vertical-stretch: 0;
 
             VerticalLayout {
                 
                 StandardTableView {
-                    // account for both ascending and descending sorting
+                    sort-ascending(index) => {
+                        root.sort-index = index;
+                        root.sort-acending = true;
+                    }
+
                     sort-descending(index) => {
                         root.sort-index = index;
                         root.sort-acending = false;
@@ -53,7 +58,7 @@ export component TableViewPage inherits Window {
                 VerticalLayout {
                     // create a filter for the table
                     Text {
-                        text: @tr("Filter by Header 2:");
+                        text: @tr("Filter by Name:");
                     }
                     filter-edit := LineEdit {
                         placeholder-text: @tr("Enter filter text");
@@ -82,6 +87,7 @@ export component TableViewPage inherits Window {
                         placeholder-text: "Enter HP";
                         text <=> root.current-hp;
                     }
+                    // add a button to add a new row to the table
                     Button {
                         text: @tr("Add Row");
                         clicked => {
@@ -92,17 +98,47 @@ export component TableViewPage inherits Window {
                             root.current-name = "";
                         }
                     }
+                    // sort initiative button uses callback to sort the table by initiative
                     Button {
                         text: @tr("Sort by Initiative");
                         clicked => {
-                            root.sort-index = 0;
-                            root.sort-acending = false;
+                            root.sort-index = 0; 
+                            root.sort-acending = false; 
+                            TableViewPageAdapter.filter_sort_model(
+                                TableViewPageAdapter.row_data,
+                                filter-edit.text,
+                                root.sort-index,
+                                root.sort-acending
+                            );
                         }
                     }
                 }
+                HorizontalBox {
+                    // create inputs for the user to delete rows from the table
+                    LineEdit {
+                        font-size: 14px;
+                        placeholder-text: "Enter Name to Delete";
+                        text <=> root.current-name; 
+                    }
+                    LineEdit {
+                        font-size: 14px;
+                        placeholder-text: "Enter Initiative to Delete";
+                        text <=> root.current-initiative; 
+                    }
+                    // add a button to delete a row from the table using a callback
+                    Button {
+                        text: @tr("Delete Row");
+                        clicked => {
+                            root.delete_row_by_name();
+                        }
+                    }
+                }
+                
+                
             }
         }
         VerticalBox {
+            // create a timer to track time for combat
             Timer {
                 interval: 10ms;
                 running: root.timer-running;
@@ -116,11 +152,13 @@ export component TableViewPage inherits Window {
                 Text { 
                     text: "Elapsed Time:"; 
                 }
+                // show current progress of the timer in a progress bar
                 ProgressIndicator {
                     preferred-width: 100px;
                     progress: elapsed-time / total-time;
                 }
             }
+            // use numbers since progress bar is difficult to interpret with large numbers
             Text{
                 text: "Elapsed time: " + (root.elapsed-time / 1s) + "s";
             }
@@ -143,6 +181,7 @@ export component TableViewPage inherits Window {
                     }
                 }
             }
+            // add buttons to start, stop, and reset the timer
             HorizontalBox {
                 spacing: 10px;
                 Button {

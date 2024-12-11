@@ -96,7 +96,7 @@ pub fn main() {
             let current_name = app_clone.get_current_name().trim().to_string();
 
             let mut found: bool = false;
-
+            // check for autofill in the monster database
             for (key, value) in &monster_data {
                 if *key.trim().to_lowercase() == current_name.trim().to_lowercase() {
                     found = true;
@@ -125,9 +125,36 @@ pub fn main() {
             row_data_clone.push(items.into());
         }
     });
+
+    app.on_delete_row_by_name({
+        // Clone the data model for shared ownership
+        let app_clone = app.clone(); 
+        let row_data_clone = row_data.clone(); 
     
-
-
+        move || {
+            // Get the name & initative to delete
+            let current_name = app_clone.get_current_name().trim().to_string(); 
+            let current_initiative = app_clone.get_current_initiative().trim().to_string(); 
+    
+            // Find the index of the row with the specified name and initiative
+            if let Some(index) = row_data_clone.iter().position(|row| {
+                let name = row.row_data(1).unwrap().text.to_string();
+                let initiative = row.row_data(0).unwrap().text.to_string();
+                // Both name and initiative must match
+                name.trim().eq_ignore_ascii_case(&current_name)
+                    && initiative.trim() == current_initiative 
+            }) {
+                // Remove the row
+                row_data_clone.remove(index); 
+            } else {
+                eprintln!(
+                    "No row found with Name: '{}' and Initiative: '{}'",
+                    current_name, current_initiative
+                );
+            }
+        }
+    });
+    
     app.global::<TableViewPageAdapter>().set_row_data(row_data.clone().into());
     app.global::<TableViewPageAdapter>().on_filter_sort_model(filter_sort_model);
 
@@ -162,22 +189,28 @@ fn filter_sort_model(
         // filter by first row
         model =
             Rc::new(source_model.clone().filter(move |e| {
-                e.row_data(0).unwrap().text.to_lowercase().contains(filter.as_str())
+                e.row_data(1).unwrap().text.to_lowercase().contains(filter.as_str())
             }))
             .into();
     }
 
     if sort_index >= 0 {
-        model = Rc::new(model.clone().sort_by(move |r_a, r_b| {
-            let c_a = r_a.row_data(sort_index as usize).unwrap();
-            let c_b = r_b.row_data(sort_index as usize).unwrap();
+        model = Rc::new(
+            model.clone().sort_by(move |r_a, r_b| {
+                let c_a = r_a.row_data(sort_index as usize).unwrap();
+                let c_b = r_b.row_data(sort_index as usize).unwrap();
 
-            if sort_ascending {
-                c_a.text.cmp(&c_b.text)
-            } else {
-                c_b.text.cmp(&c_a.text)
-            }
-        }))
+                // Use text-to-integer conversion if the data in the column is numeric
+                let a = c_a.text.parse::<i32>().unwrap_or(0);
+                let b = c_b.text.parse::<i32>().unwrap_or(0);
+
+                if sort_ascending {
+                    a.cmp(&b) // Ascending order
+                } else {
+                    b.cmp(&a) // Descending order
+                }
+            }),
+        )
         .into();
     }
 
