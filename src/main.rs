@@ -84,28 +84,49 @@ pub fn main() {
     app.global::<TableViewPageAdapter>().set_row_data(row_data.clone().into());
 
     app.on_add_row({
-        let app_clone = app.clone(); // Clone the Rc handle
-        let row_data_clone = row_data.clone(); // Clone the row_data Rc handle
-
+        // have to clone data and wrap in RC for shared ownership because dumb rust ownership memory management
+        let app_clone = app.clone(); 
+        let row_data_clone = row_data.clone(); 
+        let monster_data = monster_data_base();
+    
         move || {
             let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
+    
+            // Retrieve the name entered by the user
+            let current_name = app_clone.get_current_name().trim().to_string();
 
-            // Retrieve the current values from the app
-            let current_hp = app_clone.get_current_hp();
-            let current_ac = app_clone.get_current_ac();
-            let current_init = app_clone.get_current_initiative();
-            let current_name = app_clone.get_current_name();
+            let mut found: bool = false;
 
-            // Add the retrieved values to the new row
-            items.push(slint::format!("{current_init}").into());
-            items.push(slint::format!("{current_name}").into());
-            items.push(slint::format!("{current_hp}").into());
-            items.push(slint::format!("{current_ac}").into());
+            for (key, value) in &monster_data {
+                if *key.trim().to_lowercase() == current_name.trim().to_lowercase() {
+                    found = true;
+                    let initive_rand = roll_dice(1, 20, ((value.get_init() - 10) / 2).try_into().unwrap());
+                    items.push(slint::format!("{:?}", initive_rand).into());
+                    items.push(slint::format!("{current_name}").into());
+                    items.push(slint::format!("{:?}", value.display_armor_class()).into());
+                    items.push(slint::format!("{:?}", value.display_hit_points()).into());
+                    break;
+                } 
+            }
 
-            // Push the new row into the row data
+            // If no match, use manual inputs
+            if !found {
+                let current_init: SharedString = app_clone.get_current_initiative();
+                let current_hp = app_clone.get_current_hp();
+                let current_ac = app_clone.get_current_ac();
+
+                items.push(slint::format!("{current_init}").into());
+                items.push(slint::format!("{current_name}").into());
+                items.push(slint::format!("{current_hp}").into());
+                items.push(slint::format!("{current_ac}").into());
+            }
+
+            // Add the row to row_data
             row_data_clone.push(items.into());
         }
     });
+    
+
 
     app.global::<TableViewPageAdapter>().set_row_data(row_data.clone().into());
     app.global::<TableViewPageAdapter>().on_filter_sort_model(filter_sort_model);
