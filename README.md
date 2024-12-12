@@ -17,14 +17,21 @@ This project is in the early stages of development. Many features are planned bu
 
 ### Prerequisites
 
-- **Rust** (Install using [rustup](https://rustup.rs/))
-- **Cargo** (Rust’s package manager)
+- **Rust** (Install using [rustup](https://rustup.rs/) or follow the directions on the [rust language website](https://www.rust-lang.org/tools/install))
 
 ### Installation
-
-Since the project is still in development, you can clone the repository and track the progress:
 
 1. Clone the repository:
 
    ```bash
    git clone https://github.com/Lsanson1987/Rusticular-Torsion.git
+
+3. Build using Cargo:
+
+   ```bash
+   Cargo build
+
+4. Run using Cargo:
+
+   ```bash
+   Cargo run
