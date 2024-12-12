@@ -1,6 +1,6 @@
 import csv
 
-##need to fix soon possible error with file name ?????/
+##convert txt to csv
 with open("correct_monster_data.csv", 'w') as csvfile:
     fields = ['Name', 'AC', 'HP', 'Int', 'Notes']
     writer = csv.DictWriter(csvfile, fieldnames=fields) 

@@ -30,56 +30,6 @@ pub fn main() {
     let app = Rc::new(TableViewPage::new().unwrap());
 
     let row_data: Rc<VecModel<slint::ModelRc<StandardListViewItem>>> = Rc::new(VecModel::default());
-    //user to select number of characters
-    // let charater_number = input_request(3) + 1;
-    // // generate rows and columns
-    // for r in 1..charater_number { // rows
-    //     let items: Rc<VecModel<StandardListViewItem>> = Rc::new(VecModel::default());
-    //     let temp_map: HashMap<String, Monster>  = monster_data_base();
-    //     //let mut monster_list: HashMap<&str, Monster> = convert_hashmap(temp_map);
-    //     let mut name = String::new();
-    //     //filling out rows/coloums with inputs
-    //     for c in 1..5 { // columns
-    //         if c == 2 {
-    //             //let initiative = rand::random::<u8>() % 100;
-    //             let input_num = input_request(0);
-    //             items.push(slint::format!("{input_num}").into());
-    //             items.push(slint::format!("{name}").into());
-    //         } else if c == 1 {
-    //             println!("Please enter your Name:");
-    //             io::stdin()
-    //                 .read_line(&mut name)
-    //                 .expect("Failed to read line");
-    //             let mut is_real = false;
-    //             //if found within data base then auto fill with randome initive
-    //             for (key, value) in &temp_map {
-    //                 println!("{}", key);
-    //                 if *key.trim().to_lowercase() == name.trim().to_lowercase() {
-    //                     let initive_rand = roll_dice(1, 20, ((value.get_init() - 10) / 2).try_into().unwrap());
-    //                     items.push(slint::format!("{:?}", initive_rand).into());
-    //                     items.push(slint::format!("{name}").into());
-    //                     items.push(slint::format!("{:?}", value.display_armor_class()).into());
-    //                     items.push(slint::format!("{:?}", value.display_hit_points()).into());
-    //                     is_real = true;
-    //                     break;
-    //                 }
-    //             }
-    //             println!("{}", is_real);
-    //             if is_real {
-    //                 break;
-    //             }
-    //         } else if c == 3 {
-    //             let input_num = input_request(1);
-    //             items.push(slint::format!("{input_num}").into());
-    //         } else if c == 4 {
-    //             let input_num = input_request(2);
-    //             items.push(slint::format!("{input_num}").into());
-    //         }
-    //     }
-    //     row_data.push(items.into());
-    // }
-
-
 
     app.global::<TableViewPageAdapter>().set_row_data(row_data.clone().into());
 
@@ -164,21 +114,7 @@ pub fn main() {
     app.run().unwrap();
 }
 
-//how to handel inputs
-fn input_request (version: u8 ) -> i32 {
-    match version {
-        0 => println!("Please enter an Initiative:"),
-        1 => println!("Please enter an AC:"),
-        2 => println!("Please enter an HP:"),
-        3 => println!("Please enter number of charaters:"),
-        _ => println!("As long the Earth, Sun, and Moon exist, everything will be alright."),
-    }
-    let mut input_str = String::new();
-    io::stdin().read_line(&mut input_str).expect("Failed to read line");
-    let input_num: i32 = input_str.trim().parse().expect("Please enter a valid integer");
-    println!("You entered: {}", input_num);
-    return input_num;
-}
+
 // function callback to filter and sort the model
 fn filter_sort_model(
     source_model: ModelRc<ModelRc<StandardListViewItem>>,
