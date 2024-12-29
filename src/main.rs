@@ -68,8 +68,8 @@ pub fn main() {
 
                 items.push(slint::format!("{current_init}").into());
                 items.push(slint::format!("{current_name}").into());
-                items.push(slint::format!("{current_hp}").into());
                 items.push(slint::format!("{current_ac}").into());
+                items.push(slint::format!("{current_hp}").into());
             }
 
             // Add the row to row_data
