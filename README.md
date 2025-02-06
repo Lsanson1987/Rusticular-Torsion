@@ -3,7 +3,7 @@
 A **D&D Omnibus** built in Rust, designed for tracking and assisting you throughout any D&D adventure.
 
 🏆 **Hall of Fame**  
-This project was recognized for its innovation and excellence in the **2024 Fall Semester Hall of Fame**. Learn more about the recognition [here](https://example.com/hall-of-fame).
+This project was recognized for its innovation and excellence in the **2024 Fall Semester Hall of Fame**. Learn more about the recognition [here](https://web.archive.org/web/20250206112645/https://honors.cs128.org/hof).
 
 ---
 
